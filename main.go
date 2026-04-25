@@ -1,6 +1,11 @@
 package mai
 
-import "time"
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+)
 
 type Todo struct {
 	ID         string    `json:"id"`
@@ -12,5 +17,15 @@ type Todo struct {
 }
 
 func main() {
+	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{"mensagem": "pong"})
+	})
 
+	fmt.Println("Servidor rodando na porta 8080...")
+
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println("Erro ao iniciar o servidor", err)
+	}
 }
